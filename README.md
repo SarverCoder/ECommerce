@@ -3,7 +3,7 @@
 E-commerce REST API built with **.NET 10** and **Clean Architecture**, backed by **PostgreSQL**.
 
 ## Features
-- Categories, products (with image upload), customers and orders
+- Categories, products (with image upload), customers, shopping cart and orders
 - Rich domain model: stock control, order lifecycle `Pending → Paid → Shipped → Delivered` / `Cancelled`
 - JWT authentication with refresh-token rotation; roles `Admin` and `Customer`
 - Customers can only see and manage their own orders
@@ -50,4 +50,5 @@ src/
 | Categories | `GET` (public), `POST/PUT/DELETE` (admin) |
 | Products | `GET` with search & paging (public), `POST/PUT/DELETE`, `PUT /{id}/image`, stock & activation (admin) |
 | Customers | admin only |
+| Cart | `GET /api/cart`, `POST /items`, `PUT/DELETE /items/{productId}`, `DELETE` (clear), `POST /checkout` (customer) |
 | Orders | `POST`, `GET /mine`, `GET /{id}`, `pay`, `cancel` (owner or admin), `ship`, `deliver` (admin) |

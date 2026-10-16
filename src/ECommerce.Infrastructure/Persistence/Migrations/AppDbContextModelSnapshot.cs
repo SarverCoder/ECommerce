@@ -22,6 +22,58 @@ namespace ECommerce.Infrastructure.Persistence.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("ECommerce.Domain.Entities.Cart", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("CustomerId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CustomerId")
+                        .IsUnique();
+
+                    b.ToTable("carts", (string)null);
+                });
+
+            modelBuilder.Entity("ECommerce.Domain.Entities.CartItem", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("CartId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("ProductId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
+
+                    b.HasIndex("CartId", "ProductId")
+                        .IsUnique();
+
+                    b.ToTable("cart_items", (string)null);
+                });
+
             modelBuilder.Entity("ECommerce.Domain.Entities.Category", b =>
                 {
                     b.Property<Guid>("Id")
@@ -267,6 +319,32 @@ namespace ECommerce.Infrastructure.Persistence.Migrations
                     b.ToTable("users", (string)null);
                 });
 
+            modelBuilder.Entity("ECommerce.Domain.Entities.Cart", b =>
+                {
+                    b.HasOne("ECommerce.Domain.Entities.Customer", null)
+                        .WithOne()
+                        .HasForeignKey("ECommerce.Domain.Entities.Cart", "CustomerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("ECommerce.Domain.Entities.CartItem", b =>
+                {
+                    b.HasOne("ECommerce.Domain.Entities.Cart", null)
+                        .WithMany("Items")
+                        .HasForeignKey("CartId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ECommerce.Domain.Entities.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+                });
+
             modelBuilder.Entity("ECommerce.Domain.Entities.Order", b =>
                 {
                     b.HasOne("ECommerce.Domain.Entities.Customer", "Customer")
@@ -314,6 +392,11 @@ namespace ECommerce.Infrastructure.Persistence.Migrations
                         .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("Customer");
+                });
+
+            modelBuilder.Entity("ECommerce.Domain.Entities.Cart", b =>
+                {
+                    b.Navigation("Items");
                 });
 
             modelBuilder.Entity("ECommerce.Domain.Entities.Category", b =>
