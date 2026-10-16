@@ -1,0 +1,5 @@
+﻿@host = http://localhost:5194
+
+GET {{host}}/api/categories
+Accept: application/json
+
